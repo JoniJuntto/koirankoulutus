@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      args:
+        VITE_SERVER_URL: https://api.koirankoulutus.com
+    ports: !override
+      - "127.0.0.1:18473:80"
+
+  server:
+    environment:
+      CORS_ORIGIN: https://koirankoulutus.com
+    ports: !override
+      - "127.0.0.1:18474:3000"
+
+  postgres:
+    ports: !override []
