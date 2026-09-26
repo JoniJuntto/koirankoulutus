@@ -9,7 +9,7 @@ Caddy on the host proxies two hostnames to localhost-only ports:
 | `https://koirankoulutus.com` | `127.0.0.1:18473` | web (nginx, port 80) |
 | `https://api.koirankoulutus.com` | `127.0.0.1:18474` | API (port 3000) |
 
-Postgres stays on the Compose network and is not published on the host. `www.koirankoulutus.com` redirects to the apex host. The site and the API are different origins: the web build bakes in `VITE_SERVER_URL`, and auth cookies are `SameSite=None; Secure`.
+Postgres and MinIO (photo storage) stay on the Compose network and are not published on the host. Another project on this server already uses ports 9000/9001 for its own MinIO. `www.koirankoulutus.com` redirects to the apex host. The site and the API are different origins: the web build bakes in `VITE_SERVER_URL`, and auth cookies are `SameSite=None; Secure`.
 
 Plain `docker compose up` publishes `3001`, `3000`, and `5432`. Production always uses the second Compose file below.
 
@@ -62,7 +62,7 @@ The GitHub remote is SSH. If `git clone` fails, add a read-only deploy key for t
 
 ## 4. Environment files
 
-These files are gitignored. Create them on the server before the first build. Compose reads `apps/web/.env` and `apps/server/.env` as build secrets, and it reads `POSTGRES_PASSWORD` from a `.env` file in `/opt/koirankoulutus`.
+These files are gitignored. Create them on the server before the first build. Compose reads `apps/web/.env` and `apps/server/.env` as build secrets, and it reads `POSTGRES_PASSWORD`, `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` from a `.env` file in `/opt/koirankoulutus`.
 
 Generate a database password and an auth secret:
 

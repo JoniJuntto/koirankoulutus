@@ -67,8 +67,9 @@ services:
     restart: unless-stopped
 
   # Uploaded photos. The official MinIO images are no longer published; Chainguard builds MinIO
-  # from source and keeps :latest current. Only the server talks to it (photos are served through
-  # the server at /media/), so its ports are bound to localhost for the dev server and `mc`.
+  # from source and keeps :latest current. Only the server talks to it, over the compose network
+  # (photos are served through the server at /media/). The host port is just for `bun run dev`;
+  # set MINIO_PORT if 9000 is taken. Production publishes no port (docker-compose.prod.yml).
   minio:
     image: chainguard/minio:latest
     command: ["server", "/data"]
@@ -76,8 +77,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     ports:
-      - "127.0.0.1:9000:9010"
-      - "127.0.0.1:9001:9001"
+      - "127.0.0.1:${MINIO_PORT:-9000}:9000"
     volumes:
       - koirankoulutus_minio_data:/data
     healthcheck:

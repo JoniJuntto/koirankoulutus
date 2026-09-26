@@ -14,3 +14,8 @@ services:
 
   postgres:
     ports: !override []
+
+  # Only the server needs MinIO, over the compose network. Port 9000 is also taken on the host
+  # by another project's MinIO.
+  minio:
+    ports: !override []
