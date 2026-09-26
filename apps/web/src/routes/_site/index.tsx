@@ -16,13 +16,6 @@ export const Route = createFileRoute("/_site/")({
 	}),
 });
 
-const stats = [
-	{ value: "1988", label: "koiria siitä lähtien" },
-	{ value: "1995", label: "kouluttanut ryhmiä vuodesta" },
-	{ value: "3 ×", label: "tottelevaisuusvalio" },
-	{ value: "79", label: "EVL-ykköstulosta" },
-];
-
 const steps = [
 	{
 		icon: MousePointerClick,
@@ -48,9 +41,6 @@ function HomePage() {
 		<>
 			<section className="mx-auto grid max-w-6xl items-center gap-10 px-5 pt-10 pb-16 md:grid-cols-[1.1fr_1fr] md:pt-16">
 				<div>
-					<p className="font-semibold text-accent text-xs uppercase tracking-[0.2em]">
-						Verkkokurssit · Riihimäki
-					</p>
 					<h1 className="mt-4 text-balance font-display font-semibold text-5xl leading-[1.05] sm:text-6xl">
 						Koirankoulutusta <em className="text-primary">nyt ja tässä</em>.
 					</h1>
@@ -94,20 +84,6 @@ function HomePage() {
 						fetchPriority="high"
 					/>
 				</div>
-			</section>
-
-			<section className="border-border border-y bg-card">
-				<dl className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-10 md:grid-cols-4">
-					{stats.map((s) => (
-						<div key={s.label}>
-							<dt className="sr-only">{s.label}</dt>
-							<dd className="font-display font-semibold text-4xl text-primary">
-								{s.value}
-							</dd>
-							<dd className="mt-1 text-muted-foreground text-sm">{s.label}</dd>
-						</div>
-					))}
-				</dl>
 			</section>
 
 			<section className="mx-auto max-w-6xl px-5 py-20">

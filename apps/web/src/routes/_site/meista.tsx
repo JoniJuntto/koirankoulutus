@@ -21,11 +21,17 @@ const dogs = [
 		note: "Palveluskoirien SM-kultaa, -hopeaa ja -pronssia hakukokeessa. Yrityksen kaima.",
 		image: "10.jpg",
 	},
-	{ name: "Ardiente Macho Ultra Fuerte", age: "5 v", titles: "JK1 BH" },
+	{
+		name: "Ardiente Macho Ultra Fuerte",
+		age: "5 v",
+		titles: "JK1 BH",
+		image: "mauto.jpg",
+	},
 	{
 		name: "Särkivaaran Oon Niin Malttamaton",
 		age: "1 v",
 		titles: "Nuori lupaus",
+		image: "mersu.jpg",
 	},
 ];
 
