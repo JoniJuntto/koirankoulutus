@@ -1,8 +1,10 @@
+import { media } from "@koirankoulutus/db/schema/cms";
 import { course, courseRequest } from "@koirankoulutus/db/schema/courses";
 import { TRPCError } from "@trpc/server";
 import { asc, eq, sql } from "drizzle-orm";
 import z from "zod";
 
+import { pgCode, uniqueSlugError } from "../errors";
 import { protectedProcedure, publicProcedure, router } from "../index";
 import { courseInput } from "../schemas";
 
@@ -30,18 +32,26 @@ export const coursesRouter = router({
 				platform: course.platform,
 				priceCents: course.priceCents,
 				maxParticipants: course.maxParticipants,
-				image: course.image,
+				imageKey: media.key,
+				imageAlt: media.alt,
 				confirmed: confirmedCount,
 			})
 			.from(course)
+			.innerJoin(media, eq(media.id, course.imageId))
 			.where(eq(course.published, true))
 			.orderBy(asc(course.startsOn)),
 	),
 
 	adminList: protectedProcedure.query(({ ctx }) =>
 		ctx.db
-			.select({ course, confirmed: confirmedCount, pending: newCount })
+			.select({
+				course,
+				imageKey: media.key,
+				confirmed: confirmedCount,
+				pending: newCount,
+			})
 			.from(course)
+			.innerJoin(media, eq(media.id, course.imageId))
 			.orderBy(asc(course.startsOn)),
 	),
 
@@ -95,17 +105,3 @@ export const coursesRouter = router({
 			}
 		}),
 });
-
-function pgCode(e: unknown): string | undefined {
-	const err = e as { code?: string; cause?: { code?: string } };
-	return err.code ?? err.cause?.code;
-}
-
-function uniqueSlugError(e: unknown) {
-	return pgCode(e) === "23505"
-		? new TRPCError({
-				code: "CONFLICT",
-				message: "Osoitetunniste (slug) on jo käytössä.",
-			})
-		: e;
-}

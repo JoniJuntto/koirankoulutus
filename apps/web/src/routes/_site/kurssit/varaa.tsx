@@ -14,7 +14,7 @@ import z from "zod";
 
 import { spotsLeft } from "@/components/course-card";
 import { pageHead } from "@/lib/head";
-import { contact } from "@/lib/site";
+import { useSettings } from "@/lib/settings";
 import { trpc } from "@/utils/trpc";
 
 export const Route = createFileRoute("/_site/kurssit/varaa")({
@@ -27,6 +27,7 @@ type Errors = Partial<Record<keyof CourseRequestInput, string>>;
 
 function BookPage() {
 	const { kurssi } = Route.useSearch();
+	const { email } = useSettings();
 	const navigate = useNavigate();
 	const courses = useQuery(trpc.courses.list.queryOptions());
 	const [errors, setErrors] = useState<Errors>({});
@@ -235,15 +236,17 @@ function BookPage() {
 							role="alert"
 							className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm"
 						>
-							Lähetys epäonnistui: {create.error.message} Voit myös lähettää
-							pyynnön sähköpostilla osoitteeseen{" "}
-							<a
-								className="font-medium underline"
-								href={`mailto:${contact.email}`}
-							>
-								{contact.email}
-							</a>
-							.
+							Lähetys epäonnistui: {create.error.message}
+							{email && (
+								<>
+									{" "}
+									Voit myös lähettää pyynnön sähköpostilla osoitteeseen{" "}
+									<a className="font-medium underline" href={`mailto:${email}`}>
+										{email}
+									</a>
+									.
+								</>
+							)}
 						</p>
 					)}
 

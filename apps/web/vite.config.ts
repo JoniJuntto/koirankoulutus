@@ -7,6 +7,13 @@ import { defineConfig } from "vite";
 export default defineConfig({
 	server: {
 		port: 3001,
+		// Same paths nginx proxies to the API server in production (apps/web/nginx.conf).
+		proxy: Object.fromEntries(
+			["/media", "/sitemap.xml", "/robots.txt"].map((path) => [
+				path,
+				"http://localhost:3000",
+			]),
+		),
 	},
 	resolve: {
 		tsconfigPaths: true,

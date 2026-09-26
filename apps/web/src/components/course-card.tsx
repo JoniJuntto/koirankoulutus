@@ -1,11 +1,9 @@
-import { formatDate, formatPrice } from "@koirankoulutus/api/format";
+import { formatDate, formatPrice, mediaUrl } from "@koirankoulutus/api/format";
 import type { AppRouter } from "@koirankoulutus/api/routers/index";
 import { buttonVariants } from "@koirankoulutus/ui/components/button";
 import { Link } from "@tanstack/react-router";
 import type { inferRouterOutputs } from "@trpc/server";
 import { CalendarDays, Clock, MonitorPlay, Users } from "lucide-react";
-
-import { img } from "@/lib/site";
 
 export type PublicCourse =
 	inferRouterOutputs<AppRouter>["courses"]["list"][number];
@@ -26,8 +24,8 @@ export default function CourseCard({
 		<article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
 			<div className="relative aspect-[4/3] overflow-hidden">
 				<img
-					src={img(course.image)}
-					alt=""
+					src={mediaUrl(course.imageKey)}
+					alt={course.imageAlt}
 					loading="lazy"
 					className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
 				/>

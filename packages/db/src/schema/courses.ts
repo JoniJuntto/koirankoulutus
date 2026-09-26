@@ -8,7 +8,10 @@ import {
 	serial,
 	text,
 	timestamp,
+	uuid,
 } from "drizzle-orm/pg-core";
+
+import { media } from "./cms";
 
 export const course = pgTable("course", {
 	id: serial("id").primaryKey(),
@@ -22,7 +25,9 @@ export const course = pgTable("course", {
 	platform: text("platform").notNull(),
 	priceCents: integer("price_cents").notNull(),
 	maxParticipants: integer("max_participants").notNull(),
-	image: text("image").notNull(),
+	imageId: uuid("image_id")
+		.notNull()
+		.references(() => media.id, { onDelete: "restrict" }),
 	published: boolean("published").default(true).notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });

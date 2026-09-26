@@ -1,4 +1,9 @@
-import { formatDate, formatPrice } from "@koirankoulutus/api/format";
+import {
+	formatDate,
+	formatPrice,
+	mediaUrl,
+	slugify,
+} from "@koirankoulutus/api/format";
 import type { AppRouter } from "@koirankoulutus/api/routers/index";
 import { type CourseInput, courseInput } from "@koirankoulutus/api/schemas";
 import { Button } from "@koirankoulutus/ui/components/button";
@@ -12,7 +17,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { courseImages, img } from "@/lib/site";
+import { ImageField } from "@/components/admin/media";
 import { trpc } from "@/utils/trpc";
 
 export const Route = createFileRoute("/admin/_panel/kurssit")({
@@ -33,17 +38,9 @@ const empty: CourseInput = {
 	platform: "Zoom",
 	priceCents: 5900,
 	maxParticipants: 10,
-	image: "4.jpg",
+	imageId: "",
 	published: true,
 };
-
-const slugify = (s: string) =>
-	s
-		.toLowerCase()
-		.normalize("NFD")
-		.replace(/[̀-ͯ]/g, "")
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-|-$/g, "");
 
 function CoursesAdminPage() {
 	const courses = useQuery(trpc.courses.adminList.queryOptions());
@@ -107,87 +104,91 @@ function CoursesAdminPage() {
 						</tr>
 					</thead>
 					<tbody>
-						{courses.data?.map(({ course: c, confirmed, pending }) => (
-							<tr key={c.id} className="border-border border-b last:border-0">
-								<td className="px-4 py-3">
-									<div className="flex items-center gap-3">
-										<img
-											src={img(c.image)}
-											alt=""
-											className="size-10 rounded-md object-cover"
+						{courses.data?.map(
+							({ course: c, imageKey, confirmed, pending }) => (
+								<tr key={c.id} className="border-border border-b last:border-0">
+									<td className="px-4 py-3">
+										<div className="flex items-center gap-3">
+											<img
+												src={mediaUrl(imageKey)}
+												alt=""
+												className="size-10 rounded-md object-cover"
+											/>
+											<span className="font-medium">{c.name}</span>
+										</div>
+									</td>
+									<td className="whitespace-nowrap px-4 py-3">
+										{formatDate(c.startsOn)}
+									</td>
+									<td className="whitespace-nowrap px-4 py-3">
+										{formatPrice(c.priceCents)}
+									</td>
+									<td className="px-4 py-3">
+										<span
+											className={
+												confirmed >= c.maxParticipants
+													? "font-semibold text-accent"
+													: ""
+											}
+										>
+											{confirmed} / {c.maxParticipants}
+										</span>
+									</td>
+									<td className="px-4 py-3">
+										{pending > 0 ? (
+											<Link
+												to="/admin"
+												search={{ tila: "new", kurssi: c.id }}
+												className="rounded-full bg-amber-100 px-2.5 py-0.5 font-medium text-amber-900 text-xs hover:underline"
+											>
+												{pending} uutta
+											</Link>
+										) : (
+											<span className="text-muted-foreground">–</span>
+										)}
+									</td>
+									<td className="px-4 py-3">
+										<input
+											type="checkbox"
+											aria-label={`${c.name} näkyvissä sivustolla`}
+											checked={c.published}
+											onChange={(e) =>
+												setPublished.mutate({
+													id: c.id,
+													published: e.target.checked,
+												})
+											}
+											className="size-4 accent-[var(--primary)]"
 										/>
-										<span className="font-medium">{c.name}</span>
-									</div>
-								</td>
-								<td className="whitespace-nowrap px-4 py-3">
-									{formatDate(c.startsOn)}
-								</td>
-								<td className="whitespace-nowrap px-4 py-3">
-									{formatPrice(c.priceCents)}
-								</td>
-								<td className="px-4 py-3">
-									<span
-										className={
-											confirmed >= c.maxParticipants
-												? "font-semibold text-accent"
-												: ""
-										}
-									>
-										{confirmed} / {c.maxParticipants}
-									</span>
-								</td>
-								<td className="px-4 py-3">
-									{pending > 0 ? (
-										<Link
-											to="/admin"
-											search={{ tila: "new", kurssi: c.id }}
-											className="rounded-full bg-amber-100 px-2.5 py-0.5 font-medium text-amber-900 text-xs hover:underline"
-										>
-											{pending} uutta
-										</Link>
-									) : (
-										<span className="text-muted-foreground">–</span>
-									)}
-								</td>
-								<td className="px-4 py-3">
-									<input
-										type="checkbox"
-										aria-label={`${c.name} näkyvissä sivustolla`}
-										checked={c.published}
-										onChange={(e) =>
-											setPublished.mutate({
-												id: c.id,
-												published: e.target.checked,
-											})
-										}
-										className="size-4 accent-[var(--primary)]"
-									/>
-								</td>
-								<td className="px-4 py-3">
-									<div className="flex justify-end gap-1">
-										<Button
-											variant="ghost"
-											size="icon-sm"
-											aria-label={`Muokkaa ${c.name}`}
-											onClick={() => setEditing(c)}
-										>
-											<Pencil />
-										</Button>
-										<Button
-											variant="ghost"
-											size="icon-sm"
-											aria-label={`Poista ${c.name}`}
-											onClick={() => {
-												if (window.confirm(`Poistetaanko kurssi "${c.name}"?`))
-													remove.mutate({ id: c.id });
-											}}
-										>
-											<Trash2 />
-										</Button>
-									</div>
-								</td>
-							</tr>
-						))}
+									</td>
+									<td className="px-4 py-3">
+										<div className="flex justify-end gap-1">
+											<Button
+												variant="ghost"
+												size="icon-sm"
+												aria-label={`Muokkaa ${c.name}`}
+												onClick={() => setEditing(c)}
+											>
+												<Pencil />
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon-sm"
+												aria-label={`Poista ${c.name}`}
+												onClick={() => {
+													if (
+														window.confirm(`Poistetaanko kurssi "${c.name}"?`)
+													)
+														remove.mutate({ id: c.id });
+												}}
+											>
+												<Trash2 />
+											</Button>
+										</div>
+									</td>
+								</tr>
+							),
+						)}
 					</tbody>
 				</table>
 				{courses.data?.length === 0 && (
@@ -350,29 +351,14 @@ function CourseForm({
 					/>
 					Näkyvissä sivustolla
 				</label>
-				<fieldset className="md:col-span-2">
-					<legend className="font-medium text-sm">Kuva</legend>
-					<div className="mt-2 grid grid-cols-7 gap-2">
-						{courseImages.map((file) => (
-							<label key={file} className="cursor-pointer">
-								<input
-									type="radio"
-									name="image"
-									value={file}
-									checked={values.image === file}
-									onChange={() => set("image", file)}
-									className="peer sr-only"
-								/>
-								<img
-									src={img(file)}
-									alt={`Kuva ${file}`}
-									loading="lazy"
-									className="aspect-square w-full rounded-md object-cover opacity-70 ring-primary ring-offset-2 peer-checked:opacity-100 peer-checked:ring-2 peer-focus-visible:ring-2"
-								/>
-							</label>
-						))}
-					</div>
-				</fieldset>
+				<div className="md:col-span-2">
+					<ImageField
+						label="Kuva"
+						value={values.imageId || null}
+						onChange={(id) => set("imageId", id ?? "")}
+						error={errors.imageId}
+					/>
+				</div>
 			</div>
 			<div className="mt-6 flex gap-2">
 				<Button type="submit" disabled={create.isPending || update.isPending}>

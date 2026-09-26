@@ -25,6 +25,16 @@ export const Route = createFileRoute("/admin/_panel")({
 	},
 });
 
+const tabs = [
+	{ to: "/admin", label: "Pyynnöt" },
+	{ to: "/admin/kurssit", label: "Kurssit" },
+	{ to: "/admin/blogi", label: "Blogi" },
+	{ to: "/admin/sivut", label: "Sivut" },
+	{ to: "/admin/koirat", label: "Koirat" },
+	{ to: "/admin/kuvat", label: "Kuvat" },
+	{ to: "/admin/asetukset", label: "Asetukset" },
+] as const;
+
 function AdminLayout() {
 	const { user } = Route.useRouteContext();
 	const navigate = useNavigate();
@@ -38,22 +48,18 @@ function AdminLayout() {
 					<span className="font-display font-semibold text-lg text-primary italic">
 						Hallinta
 					</span>
-					<nav className="flex gap-1">
-						<Link
-							to="/admin"
-							activeOptions={{ exact: true }}
-							className={tab}
-							activeProps={{ className: "bg-secondary !text-foreground" }}
-						>
-							Pyynnöt
-						</Link>
-						<Link
-							to="/admin/kurssit"
-							className={tab}
-							activeProps={{ className: "bg-secondary !text-foreground" }}
-						>
-							Kurssit
-						</Link>
+					<nav className="flex flex-wrap gap-1">
+						{tabs.map((t) => (
+							<Link
+								key={t.to}
+								to={t.to}
+								activeOptions={{ exact: t.to === "/admin" }}
+								className={tab}
+								activeProps={{ className: "bg-secondary !text-foreground" }}
+							>
+								{t.label}
+							</Link>
+						))}
 					</nav>
 					<div className="ml-auto flex items-center gap-2">
 						<span className="hidden text-muted-foreground text-sm sm:inline">

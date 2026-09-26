@@ -1,18 +1,19 @@
 // Needs the dev database: `bun run db:start`, then `bun test` in packages/api.
 import { afterAll, expect, test } from "bun:test";
-import { createDb } from "@koirankoulutus/db";
+import { media } from "@koirankoulutus/db/schema/cms";
 import { course, courseRequest } from "@koirankoulutus/db/schema/courses";
 import { eq } from "drizzle-orm";
 
 import type { Context } from "../context";
 import type { Mail } from "../mail";
+import { testDb as db, memoryStorage } from "../testing";
 import { appRouter } from "./index";
 
-const db = createDb({
-	DATABASE_URL:
-		process.env.DATABASE_URL ??
-		"postgresql://postgres:password@localhost:5432/koirankoulutus",
-});
+const [testImage] = await db
+	.insert(media)
+	.values({ key: `test/${crypto.randomUUID()}.jpg`, mime: "image/jpeg" })
+	.returning();
+if (!testImage) throw new Error("media insert failed");
 
 const [testCourse] = await db
 	.insert(course)
@@ -27,7 +28,7 @@ const [testCourse] = await db
 		platform: "Zoom",
 		priceCents: 1000,
 		maxParticipants: 5,
-		image: "1.jpg",
+		imageId: testImage.id,
 	})
 	.returning();
 if (!testCourse) throw new Error("course insert failed");
@@ -37,6 +38,7 @@ afterAll(async () => {
 		.delete(courseRequest)
 		.where(eq(courseRequest.courseId, testCourse.id));
 	await db.delete(course).where(eq(course.id, testCourse.id));
+	await db.delete(media).where(eq(media.id, testImage.id));
 });
 
 let ipCounter = 0;
@@ -50,6 +52,7 @@ function caller(opts: { failMail?: boolean; admin?: boolean } = {}) {
 		ip: `test-${ipCounter++}`,
 		trainerEmail: "trainer@example.com",
 		siteUrl: "http://site.test",
+		storage: memoryStorage().storage,
 		mailer: {
 			async send(mail) {
 				if (opts.failMail) throw new Error("smtp down");
