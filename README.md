@@ -41,7 +41,7 @@ bun run check                 # Biome
 
 ## Deploy
 
-`bun run docker:up` builds and starts web (port 3001), server (3000), Postgres and MinIO. In production, put Caddy/nginx in front for HTTPS, set real env values (including `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` for compose), and back up daily:
+`bun run docker:up` builds and starts web (port 3001), server (3000), Postgres and MinIO. In production, put Caddy/nginx in front for HTTPS, set real env values (`MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` and `POSTGRES_PASSWORD` go in a `.env` next to `docker-compose.yml`; add `MINIO_PORT=9010` there if port 9000 is taken), and back up daily:
 
 - Postgres: `pg_dump`
 - Photos: `mc mirror` the `media` bucket (or copy the `koirankoulutus_minio_data` volume)
