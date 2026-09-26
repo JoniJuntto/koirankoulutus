@@ -1,1 +1,67 @@
 @import "@koirankoulutus/ui/globals.css";
+
+/* Rich text from the CMS: public pages, blog posts and the admin editor. */
+@layer components {
+	.prose {
+		line-height: 1.7;
+		overflow-wrap: break-word;
+	}
+	.prose > :first-child {
+		margin-top: 0;
+	}
+	.prose h2 {
+		margin-top: 3rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.875rem;
+		line-height: 1.2;
+	}
+	.prose h3 {
+		margin-top: 2rem;
+		font-weight: 600;
+		font-size: 1.125rem;
+	}
+	.prose p,
+	.prose ul,
+	.prose ol,
+	.prose blockquote {
+		margin-top: 1rem;
+	}
+	.prose ul {
+		list-style: disc;
+		padding-left: 1.5rem;
+	}
+	.prose ol {
+		list-style: decimal;
+		padding-left: 1.5rem;
+	}
+	.prose li {
+		margin-top: 0.5rem;
+	}
+	.prose li > p {
+		margin-top: 0;
+	}
+	.prose a {
+		color: var(--primary);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	.prose strong {
+		font-weight: 600;
+	}
+	.prose blockquote {
+		border-left: 3px solid var(--accent);
+		padding-left: 1.25rem;
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: 1.25rem;
+	}
+	.prose img {
+		margin-top: 1.5rem;
+		width: 100%;
+		border-radius: 1rem;
+	}
+	.prose img.ProseMirror-selectednode {
+		outline: 3px solid var(--ring);
+	}
+}

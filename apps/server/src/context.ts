@@ -2,7 +2,7 @@ import type { Context as ApiContext } from "@koirankoulutus/api/context";
 import type { Context as ElysiaContext } from "elysia";
 
 import { ENV } from "./env.server";
-import { auth, db, mailer } from "./services";
+import { auth, db, mailer, storage } from "./services";
 
 export type CreateContextOptions = {
 	context: ElysiaContext;
@@ -27,6 +27,7 @@ export async function createContext({
 		session,
 		ip: clientIp(context),
 		mailer,
+		storage,
 		trainerEmail: ENV.TRAINER_EMAIL,
 		siteUrl: ENV.PUBLIC_SITE_URL,
 	};

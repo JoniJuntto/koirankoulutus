@@ -1,16 +1,6 @@
-// MOCK: contact details and business ID are placeholders until Teija provides the real ones.
-export const contact = {
-	phone: "040 123 4567",
-	phoneHref: "tel:+358401234567",
-	email: "teija@example.com",
-	businessId: "1234567-8",
-	facebook:
-		"https://www.facebook.com/p/koirankoulutus-Nyt-ja-T%C3%A4ss%C3%A4-61562406327189/",
-};
-
-export const courseImages = Array.from(
-	{ length: 14 },
-	(_, i) => `${i + 1}.jpg`,
-);
-
+// Photos bundled with the site (landing page, thank-you page). Everything else uses the media library.
 export const img = (file: string) => `/images/${file}`;
+
+// "040 123 4567" -> "tel:+358401234567"
+export const phoneHref = (phone: string) =>
+	`tel:${phone.replace(/[^\d+]/g, "").replace(/^0/, "+358")}`;

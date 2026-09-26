@@ -4,6 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Laptop, MailCheck, MousePointerClick } from "lucide-react";
 
 import CourseCard from "@/components/course-card";
+import { PostCard } from "@/components/post-card";
 import { img } from "@/lib/site";
 import { trpc } from "@/utils/trpc";
 
@@ -12,6 +13,11 @@ export const Route = createFileRoute("/_site/")({
 	head: () => ({
 		meta: [
 			{ title: "koirankoulutus Nyt ja Tässä – Teija Tarkkanen, Riihimäki" },
+			{
+				name: "description",
+				content:
+					"Koirankoulutuksen verkkokursseja: TOKO, jäljestys ja arjen tottelevaisuus. Kouluttajana Teija Tarkkanen, Riihimäki.",
+			},
 		],
 	}),
 });
@@ -36,6 +42,7 @@ const steps = [
 
 function HomePage() {
 	const courses = useQuery(trpc.courses.list.queryOptions());
+	const posts = useQuery(trpc.posts.list.queryOptions({ limit: 3 }));
 
 	return (
 		<>
@@ -173,6 +180,25 @@ function HomePage() {
 					</Link>
 				</figure>
 			</section>
+
+			{posts.data && posts.data.length > 0 && (
+				<section className="mx-auto max-w-6xl px-5 pb-24">
+					<div className="flex flex-wrap items-end justify-between gap-4">
+						<h2 className="font-display font-semibold text-4xl">Blogista</h2>
+						<Link
+							to="/blogi"
+							className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+						>
+							Kaikki kirjoitukset <ArrowRight className="size-4" />
+						</Link>
+					</div>
+					<div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						{posts.data.map((p) => (
+							<PostCard key={p.id} post={p} />
+						))}
+					</div>
+				</section>
+			)}
 
 			<section className="mx-auto max-w-6xl px-5">
 				<div className="relative overflow-hidden rounded-[2rem] bg-accent px-8 py-14 text-accent-foreground sm:px-14">
