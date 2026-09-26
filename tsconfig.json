@@ -1,0 +1,3 @@
+{
+  "extends": "@koirankoulutus/config/tsconfig.base.json"
+}

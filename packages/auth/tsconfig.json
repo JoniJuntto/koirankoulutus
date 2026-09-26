@@ -1,0 +1,6 @@
+{
+	"extends": "@koirankoulutus/config/tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": true
+	}
+}

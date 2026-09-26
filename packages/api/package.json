@@ -1,0 +1,24 @@
+{
+	"name": "@koirankoulutus/api",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./*": "./src/*.ts"
+	},
+	"scripts": {
+		"check-types": "tsc --noEmit",
+    "test": "bun test"
+	},
+	"dependencies": {
+		"@koirankoulutus/auth": "workspace:*",
+		"@koirankoulutus/db": "workspace:*",
+		"@trpc/client": "catalog:",
+		"@trpc/server": "catalog:",
+		"drizzle-orm": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@koirankoulutus/config": "workspace:*",
+		"typescript": "catalog:"
+	}
+}
