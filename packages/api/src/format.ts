@@ -6,6 +6,11 @@ export const formatPrice = (cents: number) =>
 export const formatDate = (isoDate: string) =>
 	new Date(`${isoDate}T12:00:00`).toLocaleDateString("fi-FI");
 
+export const dateRange = (e: { startsOn: string; endsOn: string }) =>
+	e.startsOn === e.endsOn
+		? formatDate(e.startsOn)
+		: `${formatDate(e.startsOn)}–${formatDate(e.endsOn)}`;
+
 // "Jäljestyksen perusteet!" -> "jaljestyksen-perusteet"
 export const slugify = (s: string) =>
 	s
@@ -27,3 +32,7 @@ export const formatDay = (d: Date | string) =>
 		month: "long",
 		year: "numeric",
 	});
+
+// "2026-10-21" in Finland, wherever the code runs (sv-SE formats dates as ISO).
+export const today = () =>
+	new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Helsinki" });

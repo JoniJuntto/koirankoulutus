@@ -1,4 +1,5 @@
 import { publicProcedure, router } from "../index";
+import { calendarRouter } from "./calendar";
 import { coursesRouter } from "./courses";
 import { dogsRouter } from "./dogs";
 import { mediaRouter } from "./media";
@@ -16,5 +17,6 @@ export const appRouter = router({
 	dogs: dogsRouter,
 	media: mediaRouter,
 	settings: settingsRouter,
+	calendar: calendarRouter,
 });
 export type AppRouter = typeof appRouter;
