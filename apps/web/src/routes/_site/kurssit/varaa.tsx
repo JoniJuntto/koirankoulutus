@@ -5,7 +5,6 @@ import {
 } from "@koirankoulutus/api/schemas";
 import { Button } from "@koirankoulutus/ui/components/button";
 import { Input } from "@koirankoulutus/ui/components/input";
-import { Label } from "@koirankoulutus/ui/components/label";
 import { Textarea } from "@koirankoulutus/ui/components/textarea";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -13,6 +12,7 @@ import { useState } from "react";
 import z from "zod";
 
 import { spotsLeft } from "@/components/course-card";
+import { Field } from "@/components/form-field";
 import { pageHead } from "@/lib/head";
 import { useSettings } from "@/lib/settings";
 import { trpc } from "@/utils/trpc";
@@ -305,30 +305,6 @@ function BookPage() {
 					.
 				</p>
 			</aside>
-		</div>
-	);
-}
-
-function Field({
-	label,
-	name,
-	error,
-	className,
-	children,
-}: {
-	label: string;
-	name: string;
-	error?: string;
-	className?: string;
-	children: React.ReactNode;
-}) {
-	return (
-		<div className={`grid gap-2 ${className ?? ""}`}>
-			<Label htmlFor={name} className="font-medium">
-				{label}
-			</Label>
-			{children}
-			{error && <p className="text-destructive text-sm">{error}</p>}
 		</div>
 	);
 }

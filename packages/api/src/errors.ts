@@ -16,3 +16,7 @@ export function uniqueSlugError(e: unknown) {
 
 export const notFound = (message: string) =>
 	new TRPCError({ code: "NOT_FOUND", message });
+
+// ON DELETE RESTRICT raises 23001, NO ACTION raises 23503.
+export const isReferenced = (e: unknown) =>
+	pgCode(e) === "23001" || pgCode(e) === "23503";

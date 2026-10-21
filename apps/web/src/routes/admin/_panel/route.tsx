@@ -28,6 +28,7 @@ export const Route = createFileRoute("/admin/_panel")({
 const tabs = [
 	{ to: "/admin", label: "Pyynnöt" },
 	{ to: "/admin/kurssit", label: "Kurssit" },
+	{ to: "/admin/kalenteri", label: "Kalenteri" },
 	{ to: "/admin/blogi", label: "Blogi" },
 	{ to: "/admin/sivut", label: "Sivut" },
 	{ to: "/admin/koirat", label: "Koirat" },

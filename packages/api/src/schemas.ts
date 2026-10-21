@@ -23,6 +23,36 @@ export const courseRequestInput = z.object({
 });
 export type CourseRequestInput = z.input<typeof courseRequestInput>;
 
+export const weekendRequestInput = courseRequestInput
+	.pick({ name: true, email: true, phone: true, consent: true, website: true })
+	.extend({
+		eventId: z.number().int().positive(),
+		message: z.string().trim().min(5, "Kerro, mitä toivot").max(2000),
+	});
+export type WeekendRequestInput = z.input<typeof weekendRequestInput>;
+
+export const calendarEventInput = z
+	.object({
+		kind: z.enum(["public", "private", "free_weekend"]),
+		title: z.string().trim().max(150),
+		startsOn: z.iso.date("Valitse päivä"),
+		endsOn: z.iso.date("Valitse päivä"),
+		time: z.string().trim().max(120),
+		location: z.string().trim().max(200),
+		description: z.string().trim().max(3000),
+		// httpUrl, not url: the link ends up in an href, so no javascript: URLs.
+		link: z.union([z.literal(""), z.httpUrl("Tarkista osoite").max(500)]),
+	})
+	.refine((v) => v.endsOn >= v.startsOn, {
+		path: ["endsOn"],
+		message: "Päättymispäivä ei voi olla ennen alkua",
+	})
+	.refine((v) => v.kind !== "public" || v.title, {
+		path: ["title"],
+		message: "Kirjoita otsikko",
+	});
+export type CalendarEventInput = z.input<typeof calendarEventInput>;
+
 export const courseInput = z.object({
 	slug: z
 		.string()

@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const links = [
 	{ to: "/kurssit", label: "Kurssit" },
+	{ to: "/kalenteri", label: "Kalenteri" },
 	{ to: "/blogi", label: "Blogi" },
 	{ to: "/meista", label: "Kouluttaja" },
 	{ to: "/yhteystiedot", label: "Yhteystiedot" },

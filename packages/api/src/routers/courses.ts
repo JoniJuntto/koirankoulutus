@@ -4,7 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { asc, eq, sql } from "drizzle-orm";
 import z from "zod";
 
-import { pgCode, uniqueSlugError } from "../errors";
+import { isReferenced, uniqueSlugError } from "../errors";
 import { protectedProcedure, publicProcedure, router } from "../index";
 import { courseInput } from "../schemas";
 
@@ -94,7 +94,7 @@ export const coursesRouter = router({
 			try {
 				await ctx.db.delete(course).where(eq(course.id, input.id));
 			} catch (e) {
-				if (pgCode(e) === "23503") {
+				if (isReferenced(e)) {
 					throw new TRPCError({
 						code: "CONFLICT",
 						message:

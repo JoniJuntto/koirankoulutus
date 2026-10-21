@@ -19,7 +19,7 @@ const courseLines = (c: CourseInfo) =>
 		`Alusta: ${c.platform}`,
 	].join("\n");
 
-const signature =
+export const signature =
 	"Ystävällisin terveisin\nTeija Tarkkanen\nkoirankoulutus Nyt ja Tässä";
 
 export const requestsRouter = router({
